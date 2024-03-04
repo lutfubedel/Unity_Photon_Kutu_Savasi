@@ -45,6 +45,15 @@ public class ServerManager : MonoBehaviourPunCallbacks
         InvokeRepeating(nameof(MyCheckInfo), 0, 1f);
         GameObject myPlayer = PhotonNetwork.Instantiate("Player",Vector3.zero,Quaternion.identity,0,null);
         myPlayer.GetComponent<PhotonView>().Owner.NickName = PlayerPrefs.GetString("UserName");
+
+        if(PhotonNetwork.PlayerList.Length == 1)
+        {
+            myPlayer.gameObject.tag = "Player_1";
+        }
+        else
+        {
+            myPlayer.gameObject.tag = "Player_2";
+        }
     }
 
 

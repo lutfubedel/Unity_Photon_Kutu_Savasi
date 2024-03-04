@@ -5,9 +5,7 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
-    [Header("CanonBall Effects and Sounds")]
-    [SerializeField] private GameObject canonHitEffect;
-    [SerializeField] private AudioSource canonHitSound;
+
 
     [Header("OtherBoxes Effects and Sounds")]
     [SerializeField] private GameObject boxesDestroyEffect;
@@ -27,10 +25,6 @@ public class GameManager : MonoBehaviour
     {
         switch (choice)
         {
-            case 1:
-                Instantiate(canonHitEffect, hitObject.transform.position, hitObject.transform.rotation);
-                canonHitSound.Play();
-                break;
             case 2:
                 Instantiate(boxesDestroyEffect, hitObject.transform.position, hitObject.transform.rotation);
                 boxesHitSound.Play();

@@ -2,42 +2,99 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Photon.Pun;
 
 
 public class Player : MonoBehaviour
 {
-    public GameObject canonBall;
-    public GameObject firePoint;
-    public GameObject fireBallSpawnEffect;
+    [Header("CanonBall Values")]
+    [SerializeField] private GameObject canonBall;
+    [SerializeField] private GameObject firePoint;
+    [SerializeField] private GameObject fireBallSpawnEffect;
+
 
     private float powerBarValue;
+    private float shootingDirection;
     public bool isOver = false;
 
     public AudioSource throwingBallSound;
-    public Image powerBar;
+    private Image powerBar;
 
     Coroutine powerBarLoop;
+    PhotonView pw;
+
+    
 
     private void Start()
     {
+        pw = GetComponent<PhotonView>();
+
+        if(pw.IsMine)
+        {
+            powerBar = GameObject.FindWithTag("PowerBar").GetComponent<Image>();
+
+            if (PhotonNetwork.IsMasterClient)
+            {
+                transform.position = GameObject.FindWithTag("SpawnPoint_1").transform.position;
+                transform.rotation = GameObject.FindWithTag("SpawnPoint_1").transform.rotation;
+                shootingDirection = 1f;
+            }
+            else
+            {
+                transform.position = GameObject.FindWithTag("SpawnPoint_2").transform.position;
+                transform.rotation = GameObject.FindWithTag("SpawnPoint_2").transform.rotation;
+                shootingDirection = -1f;
+            }
+
+            
+        }
+
+        InvokeRepeating(nameof(IsGameStarted), 0, 0.5f);
+
         powerBarLoop = StartCoroutine(PowerBarSystem());
+        
+
+
     }
     private void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Space))
+        if(pw.IsMine)
         {
-            GameObject instantiatedBall = Instantiate(canonBall, firePoint.transform.position, firePoint.transform.rotation);
-            Rigidbody2D rb = instantiatedBall.GetComponent<Rigidbody2D>();
-            rb.AddForce(new Vector2(1,0) * 12 * powerBar.fillAmount, ForceMode2D.Impulse);
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                GameObject instantiatedBall = PhotonNetwork.Instantiate("CanonBall", firePoint.transform.position, firePoint.transform.rotation, 0, null);
+                instantiatedBall.GetComponent<PhotonView>().RPC("SendTag",RpcTarget.All,gameObject.tag);
 
-            Instantiate(fireBallSpawnEffect, firePoint.transform.position, firePoint.transform.rotation);
-            throwingBallSound.Play();
+                PhotonNetwork.Instantiate("Explosion", firePoint.transform.position, firePoint.transform.rotation, 0, null);
 
-            StopCoroutine(powerBarLoop);
+                Rigidbody2D rb = instantiatedBall.GetComponent<Rigidbody2D>();
+                rb.AddForce(new Vector2(shootingDirection, 0) * 12 * powerBar.fillAmount, ForceMode2D.Impulse);
 
+                throwingBallSound.Play();
+
+                StopCoroutine(powerBarLoop);
+
+            }
         }
+      
     }
 
+    public void IsGameStarted()
+    {
+        if(PhotonNetwork.PlayerList.Length == 2)
+        {
+            if(pw.IsMine)
+            {
+                powerBarLoop = StartCoroutine(PowerBarSystem());
+                CancelInvoke(nameof(IsGameStarted));
+            }
+
+        }
+        else
+        {
+            StopAllCoroutines();
+        }
+    }
 
     public void PowerBarMoveAgain()
     {

@@ -49,7 +49,7 @@ GameObject:
   - component: {fileID: -6771898329175947163}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Player_1_Tower
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -296,7 +296,6 @@ MonoBehaviour:
   fireBallSpawnEffect: {fileID: 8117576164388731767, guid: 64301e8759dc20943974ccf03f874bcc, type: 3}
   isOver: 0
   throwingBallSound: {fileID: 4839656669264732059}
-  powerBar: {fileID: 0}
 --- !u!82 &4839656669264732059
 AudioSource:
   m_ObjectHideFlags: 0
@@ -429,6 +428,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_SynchronizePosition: 1
-  m_SynchronizeRotation: 0
+  m_SynchronizeRotation: 1
   m_SynchronizeScale: 0
   m_UseLocal: 1
