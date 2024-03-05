@@ -46,13 +46,10 @@ public class ServerManager : MonoBehaviourPunCallbacks
         GameObject myPlayer = PhotonNetwork.Instantiate("Player",Vector3.zero,Quaternion.identity,0,null);
         myPlayer.GetComponent<PhotonView>().Owner.NickName = PlayerPrefs.GetString("UserName");
 
-        if(PhotonNetwork.PlayerList.Length == 1)
-        {
-            myPlayer.gameObject.tag = "Player_1";
-        }
-        else
+        if(PhotonNetwork.PlayerList.Length == 2)
         {
             myPlayer.gameObject.tag = "Player_2";
+            GameObject.FindWithTag("GameManager").gameObject.GetComponent<PhotonView>().RPC("StartPrizeSpawner", RpcTarget.All);
         }
     }
 

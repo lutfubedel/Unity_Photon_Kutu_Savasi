@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Photon.Pun;
 
 public class OtherBoxes : MonoBehaviour
 {
@@ -9,15 +10,18 @@ public class OtherBoxes : MonoBehaviour
     [SerializeField] private Image healthBar;
     [SerializeField] private GameObject healthCanvas;
 
+    AudioSource hitSound;
+    PhotonView pw;
 
-    private GameManager gameManager;
 
     private void Start()
     {
-        gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
+        hitSound = GetComponent<AudioSource>();
+        pw = GetComponent<PhotonView>();
     }
 
 
+    [PunRPC]
     public void takeDamage(float damagePower)
     {
         health -= damagePower;
@@ -25,14 +29,14 @@ public class OtherBoxes : MonoBehaviour
 
         if (health <= 0)
         {
-            gameManager.EffectSoundCreater(2, this.gameObject);
-            Destroy(gameObject);
+            PhotonNetwork.Instantiate("Destruction_1", transform.position, transform.rotation, 0, null);
+            hitSound.Play();
+            PhotonNetwork.Destroy(gameObject);
         }
         else
         {
             StartCoroutine(ShowCanvas());
         }
-        
     }
 
     IEnumerator ShowCanvas()

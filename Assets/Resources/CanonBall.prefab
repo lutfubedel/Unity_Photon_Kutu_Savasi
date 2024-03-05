@@ -142,6 +142,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damagePower: 20
+  playerNo: 0
 --- !u!114 &-258035479073785379
 MonoBehaviour:
   m_ObjectHideFlags: 0

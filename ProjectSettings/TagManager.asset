@@ -19,6 +19,8 @@ TagManager:
   - Player1Name
   - Player2Name
   - PowerBar
+  - FlatBoard
+  - Prize
   layers:
   - Default
   - TransparentFX

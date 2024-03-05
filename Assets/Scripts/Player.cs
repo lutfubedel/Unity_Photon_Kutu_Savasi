@@ -68,7 +68,7 @@ public class Player : MonoBehaviour
                 PhotonNetwork.Instantiate("Explosion", firePoint.transform.position, firePoint.transform.rotation, 0, null);
 
                 Rigidbody2D rb = instantiatedBall.GetComponent<Rigidbody2D>();
-                rb.AddForce(new Vector2(shootingDirection, 0) * 12 * powerBar.fillAmount, ForceMode2D.Impulse);
+                rb.AddForce(new Vector2(shootingDirection, 1) * 20 * powerBar.fillAmount, ForceMode2D.Impulse);
 
                 throwingBallSound.Play();
 
@@ -104,7 +104,7 @@ public class Player : MonoBehaviour
     IEnumerator PowerBarSystem()
     {
         isOver = false;
-        powerBar.fillAmount = 0;
+        powerBar.fillAmount = 0f;
 
         while (true)
         {
