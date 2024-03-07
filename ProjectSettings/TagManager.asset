@@ -21,6 +21,14 @@ TagManager:
   - PowerBar
   - FlatBoard
   - Prize
+  - ServerInfo
+  - Button_SaveName
+  - Button_FastGame
+  - Button_CreateRoom
+  - Panel_End
+  - EndGameText
+  - CanonBall
+  - ServerManager
   layers:
   - Default
   - TransparentFX

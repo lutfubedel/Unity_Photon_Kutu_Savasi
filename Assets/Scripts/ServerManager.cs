@@ -4,24 +4,52 @@ using UnityEngine;
 using TMPro;
 using Photon.Pun;
 using Photon.Realtime;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class ServerManager : MonoBehaviourPunCallbacks
 {
+    TMP_Text serverInfo;
+    GameObject buttonSaveName;
+    GameObject buttonFastGame;
+    GameObject buttonCreateRoom;
+
+    public bool isButton;
+
+
+
     private void Start()
     {
+        serverInfo = GameObject.FindWithTag("ServerInfo").gameObject.GetComponent<TMP_Text>();
+        buttonSaveName = GameObject.FindWithTag("Button_SaveName");
+        buttonFastGame = GameObject.FindWithTag("Button_FastGame");
+        buttonCreateRoom = GameObject.FindWithTag("Button_CreateRoom");
+
         PhotonNetwork.ConnectUsingSettings();
         DontDestroyOnLoad(gameObject);
     }
 
     public override void OnConnectedToMaster()
     {
+        serverInfo.text = "Successful Server Connection";
         Debug.Log("Servere Baðlandý");
         PhotonNetwork.JoinLobby();
     }
 
     public override void OnJoinedLobby()
     {
+        serverInfo.text = "Successful Loby Connection";
+
+        if (!PlayerPrefs.HasKey("UserName"))
+        {
+            buttonSaveName.gameObject.GetComponent<Button>().interactable = true;
+        }
+        else
+        {
+            buttonCreateRoom.gameObject.GetComponent<Button>().interactable = true;
+            buttonFastGame.gameObject.GetComponent<Button>().interactable = true;
+        }
+
         Debug.Log("Lobiye girdi");
     }
 
@@ -46,17 +74,33 @@ public class ServerManager : MonoBehaviourPunCallbacks
         GameObject myPlayer = PhotonNetwork.Instantiate("Player",Vector3.zero,Quaternion.identity,0,null);
         myPlayer.GetComponent<PhotonView>().Owner.NickName = PlayerPrefs.GetString("UserName");
 
-        if(PhotonNetwork.PlayerList.Length == 2)
+        if (PhotonNetwork.PlayerList.Length == 2)
         {
+            Debug.Log("player_2 girdi");
             myPlayer.gameObject.tag = "Player_2";
-            GameObject.FindWithTag("GameManager").gameObject.GetComponent<PhotonView>().RPC("StartPrizeSpawner", RpcTarget.All);
+            GameObject.FindWithTag("GameManager").GetComponent<PhotonView>().RPC("StartPrizeSpawner", RpcTarget.All);
         }
     }
 
 
     public override void OnLeftRoom()
     {
-        base.OnLeftRoom();
+        if(isButton)
+        {
+            Time.timeScale = 1;
+            PhotonNetwork.ConnectUsingSettings();
+        }
+        else
+        {
+            PhotonNetwork.ConnectUsingSettings();
+
+            Time.timeScale = 1;
+            PlayerPrefs.SetInt("TotalMatch", (PlayerPrefs.GetInt("TotalMatch") + 1));
+            PlayerPrefs.SetInt("Lose", (PlayerPrefs.GetInt("Lose") + 1));
+            PlayerPrefs.SetInt("Score", (PlayerPrefs.GetInt("Score") - 10));
+
+
+        }
     }
 
     public override void OnLeftLobby()
@@ -71,22 +115,40 @@ public class ServerManager : MonoBehaviourPunCallbacks
 
     public override void OnPlayerLeftRoom(Photon.Realtime.Player otherPlayer)
     {
+
+        if (isButton)
+        {
+            PhotonNetwork.ConnectUsingSettings();
+            Time.timeScale = 1;
+
+        }
+        else
+        {
+            PhotonNetwork.ConnectUsingSettings();
+            Time.timeScale = 1;
+
+
+            PlayerPrefs.SetInt("TotalMatch", (PlayerPrefs.GetInt("TotalMatch") + 1));
+            PlayerPrefs.SetInt("Win", (PlayerPrefs.GetInt("Win") + 1));
+            PlayerPrefs.SetInt("Score", (PlayerPrefs.GetInt("Score") + 100));
+        }
+
         InvokeRepeating(nameof(MyCheckInfo), 0, 1f);
     }
 
     public override void OnJoinRoomFailed(short returnCode, string message)
     {
-        base.OnJoinRoomFailed(returnCode, message);
+        serverInfo.text = "Failed To Join The Room";
     }
 
     public override void OnJoinRandomFailed(short returnCode, string message)
     {
-        base.OnJoinRoomFailed(returnCode, message);
+        serverInfo.text = "Failed To Join The Room";
     }
 
     public override void OnCreateRoomFailed(short returnCode, string message)
     {
-        base.OnCreateRoomFailed(returnCode, message);
+        serverInfo.text = "Failed To Create Room";
     }
 
 

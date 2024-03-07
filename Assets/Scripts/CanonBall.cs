@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+using TMPro;
 
 public class CanonBall : MonoBehaviour
 {
@@ -24,6 +25,7 @@ public class CanonBall : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+
         if(collision.gameObject.CompareTag("OtherBoxes"))
         {
             collision.gameObject.GetComponent<PhotonView>().RPC("takeDamage", RpcTarget.All, damagePower);
@@ -37,7 +39,7 @@ public class CanonBall : MonoBehaviour
             }
         }
 
-        if (collision.gameObject.CompareTag("Ground") || collision.gameObject.CompareTag("FlatBoard"))
+        if (collision.gameObject.CompareTag("Ground") || collision.gameObject.CompareTag("FlatBoard") || collision.gameObject.CompareTag("CanonBall"))
         {
             player.PowerBarMoveAgain();
 
@@ -52,7 +54,11 @@ public class CanonBall : MonoBehaviour
 
         if (collision.gameObject.CompareTag("Player_2_Tower"))
         {
-            gameManager.GetComponent<PhotonView>().RPC("TowerDamage", RpcTarget.All, 2, damagePower);
+            if(playerNo != 2)
+            {
+                gameManager.GetComponent<PhotonView>().RPC("TowerDamage", RpcTarget.All, 2, damagePower);
+            }
+
             player.PowerBarMoveAgain();
 
             if (pw.IsMine)
@@ -65,7 +71,11 @@ public class CanonBall : MonoBehaviour
 
         if (collision.gameObject.CompareTag("Player_1_Tower"))
         {
-            gameManager.GetComponent<PhotonView>().RPC("TowerDamage", RpcTarget.All, 1, damagePower);
+            if(playerNo != 1)
+            {
+                gameManager.GetComponent<PhotonView>().RPC("TowerDamage", RpcTarget.All, 1, damagePower);
+            }
+
             player.PowerBarMoveAgain();
 
             if (pw.IsMine)

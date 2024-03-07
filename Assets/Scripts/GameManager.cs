@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Photon.Pun;
+using TMPro;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -17,8 +19,15 @@ public class GameManager : MonoBehaviour
 
     private bool isPrizeSpawnerStarted = false;
     private int limit = 5;
-    private float waitingTime =5f;
+    private float waitingTime = 20f;
     private int spawnedPrizeCount;
+
+    [SerializeField] private GameObject[] prizeSpawnPoints;
+
+    [SerializeField] private TMP_Text player1_Name;
+    [SerializeField] private TMP_Text player2_Name;
+
+    [SerializeField] private bool isGameOver = false;
 
     private void Start()
     {
@@ -31,12 +40,15 @@ public class GameManager : MonoBehaviour
 
         while (true && isPrizeSpawnerStarted)
         {
-            if(limit==spawnedPrizeCount)
+            if (limit == spawnedPrizeCount)
             {
                 isPrizeSpawnerStarted = false;
             }
 
             yield return new WaitForSeconds(waitingTime);
+
+            int value = Random.Range(0, prizeSpawnPoints.Length);
+            PhotonNetwork.Instantiate("Prize", prizeSpawnPoints[value].transform.position, prizeSpawnPoints[value].transform.rotation,0,null);
             spawnedPrizeCount++;
         }
     }
@@ -59,18 +71,40 @@ public class GameManager : MonoBehaviour
         switch (choice)
         {
             case 1:
-                if(PhotonNetwork.IsMasterClient)
+                player1_health -= damagePower;
+                player1_healthBar.fillAmount = player1_health / 100;
+
+                if (player1_health <= 0)
                 {
-                    player1_health -= damagePower;
-                    player1_healthBar.fillAmount = player1_health / 100;
+                    foreach (GameObject item in Resources.FindObjectsOfTypeAll(typeof(GameObject)) as GameObject[])
+                    {
+                        if(item.CompareTag("Panel_End"))
+                        {
+                            item.SetActive(true);
+                            GameObject.FindWithTag("EndGameText").GetComponent<Text>().text = player2_Name.text + " WINS";
+                        }
+                    }
+
+                    Winner(2);
                 }
                 break;
 
             case 2:
-                if (PhotonNetwork.IsMasterClient)
+                player2_health -= damagePower;
+                player2_healthBar.fillAmount = player2_health / 100;
+
+                if (player2_health <= 0)
                 {
-                    player2_health -= damagePower;
-                    player2_healthBar.fillAmount = player2_health / 100;
+                    foreach (GameObject item in Resources.FindObjectsOfTypeAll(typeof(GameObject)) as GameObject[])
+                    {
+                        if (item.CompareTag("Panel_End"))
+                        {
+                            item.SetActive(true);
+                            GameObject.FindWithTag("EndGameText").GetComponent<Text>().text = player1_Name.text + " WINS";
+                        }
+                    }
+
+                    Winner(1);
                 }
                 break;
         }
@@ -109,6 +143,34 @@ public class GameManager : MonoBehaviour
                 }
                 break;
         }
+    }
+
+
+
+    public void Winner(int value)
+    {
+        if(!isGameOver)
+        {
+            GameObject.FindWithTag("Player_1").GetComponent<Player>().WhoIsWon(value);
+            GameObject.FindWithTag("Player_2").GetComponent<Player>().WhoIsWon(value);
+            isGameOver = true;
+        }
+    }
+
+
+
+
+    public void MainMenu()
+    {
+        GameObject.FindWithTag("ServerManager").GetComponent<ServerManager>().isButton = true;
+        print(GameObject.FindWithTag("ServerManager").GetComponent<ServerManager>().isButton);
+        PhotonNetwork.LoadLevel(0);
+    }
+
+    public void ExitButton()
+    {
+        print(GameObject.FindWithTag("ServerManager").GetComponent<ServerManager>().isButton);
+        PhotonNetwork.LoadLevel(0);
     }
 
 

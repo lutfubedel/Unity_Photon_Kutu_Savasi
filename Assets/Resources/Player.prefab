@@ -295,7 +295,9 @@ MonoBehaviour:
   firePoint: {fileID: 4839656667752205601}
   fireBallSpawnEffect: {fileID: 8117576164388731767, guid: 64301e8759dc20943974ccf03f874bcc, type: 3}
   isOver: 0
+  canFire: 0
   throwingBallSound: {fileID: 4839656669264732059}
+  powerBar: {fileID: 0}
 --- !u!82 &4839656669264732059
 AudioSource:
   m_ObjectHideFlags: 0

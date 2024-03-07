@@ -14718,6 +14718,7 @@ GameObject:
   - component: {fileID: 7296544745797215538}
   - component: {fileID: 2917637279729487283}
   - component: {fileID: 4090201452153759571}
+  - component: {fileID: 5997951722439221907}
   m_Layer: 0
   m_Name: Prize
   m_TagString: Prize
@@ -14848,3 +14849,15 @@ MonoBehaviour:
   m_SynchronizeRotation: 1
   m_SynchronizeScale: 0
   m_UseLocal: 1
+--- !u!114 &5997951722439221907
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8972752420875870832}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8122973b597b51c46aafd6c41fd72b0b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
