@@ -32,6 +32,7 @@ public class MenuManager : MonoBehaviour
             panel_userName.SetActive(true);
             panelEntry.SetActive(false);
             panelInfo.SetActive(false);
+
             InfoWriter();
         }
         else
@@ -39,7 +40,9 @@ public class MenuManager : MonoBehaviour
             panel_userName.SetActive(false);
             panelEntry.SetActive(true);
             panelInfo.SetActive(true);
+
             userNameText.text = "username : " + PlayerPrefs.GetString("UserName");
+
             InfoWriter();
         }
     }

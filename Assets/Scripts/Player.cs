@@ -58,8 +58,6 @@ public class Player : MonoBehaviour
     }
     private void Update()
     {
-
-        print(PhotonNetwork.PlayerList.Length);
         if(pw.IsMine)
         {
             if (Input.GetKeyDown(KeyCode.Space) && canFire)

@@ -16,8 +16,6 @@ public class ServerManager : MonoBehaviourPunCallbacks
 
     public bool isButton;
 
-
-
     private void Start()
     {
         serverInfo = GameObject.FindWithTag("ServerInfo").gameObject.GetComponent<TMP_Text>();
@@ -85,6 +83,7 @@ public class ServerManager : MonoBehaviourPunCallbacks
 
     public override void OnLeftRoom()
     {
+        print("Oda terk edildi");
         if(isButton)
         {
             Time.timeScale = 1;
@@ -98,8 +97,6 @@ public class ServerManager : MonoBehaviourPunCallbacks
             PlayerPrefs.SetInt("TotalMatch", (PlayerPrefs.GetInt("TotalMatch") + 1));
             PlayerPrefs.SetInt("Lose", (PlayerPrefs.GetInt("Lose") + 1));
             PlayerPrefs.SetInt("Score", (PlayerPrefs.GetInt("Score") - 10));
-
-
         }
     }
 
@@ -115,7 +112,7 @@ public class ServerManager : MonoBehaviourPunCallbacks
 
     public override void OnPlayerLeftRoom(Photon.Realtime.Player otherPlayer)
     {
-
+        print("Oda terk edildi 2");
         if (isButton)
         {
             PhotonNetwork.ConnectUsingSettings();
@@ -134,6 +131,8 @@ public class ServerManager : MonoBehaviourPunCallbacks
         }
 
         InvokeRepeating(nameof(MyCheckInfo), 0, 1f);
+
+
     }
 
     public override void OnJoinRoomFailed(short returnCode, string message)
@@ -154,18 +153,21 @@ public class ServerManager : MonoBehaviourPunCallbacks
 
     public void MyCheckInfo()
     {
-        if(PhotonNetwork.PlayerList.Length == 2)
+        if (SceneManager.GetActiveScene().name == "Level")
         {
-            GameObject.FindGameObjectWithTag("PlayersWaiting").SetActive(false);
-            GameObject.FindGameObjectWithTag("Player1Name").GetComponent<TextMeshProUGUI>().text = PhotonNetwork.PlayerList[0].NickName;
-            GameObject.FindGameObjectWithTag("Player2Name").GetComponent<TextMeshProUGUI>().text = PhotonNetwork.PlayerList[1].NickName;
-            CancelInvoke();
-        }
-        else
-        {
-            GameObject.FindGameObjectWithTag("PlayersWaiting").SetActive(true);
-            GameObject.FindGameObjectWithTag("Player1Name").GetComponent<TextMeshProUGUI>().text = PhotonNetwork.PlayerList[0].NickName;
-            GameObject.FindGameObjectWithTag("Player2Name").GetComponent<TextMeshProUGUI>().text = "......";
+            if (PhotonNetwork.PlayerList.Length == 2)
+            {
+                GameObject.FindGameObjectWithTag("PlayersWaiting").SetActive(false);
+                GameObject.FindGameObjectWithTag("Player1Name").GetComponent<TextMeshProUGUI>().text = PhotonNetwork.PlayerList[0].NickName;
+                GameObject.FindGameObjectWithTag("Player2Name").GetComponent<TextMeshProUGUI>().text = PhotonNetwork.PlayerList[1].NickName;
+                CancelInvoke();
+            }
+            else
+            {
+                GameObject.FindGameObjectWithTag("PlayersWaiting").SetActive(true);
+                GameObject.FindGameObjectWithTag("Player1Name").GetComponent<TextMeshProUGUI>().text = PhotonNetwork.PlayerList[0].NickName;
+                GameObject.FindGameObjectWithTag("Player2Name").GetComponent<TextMeshProUGUI>().text = "......";
+            }
         }
     }
 }

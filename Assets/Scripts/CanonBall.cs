@@ -94,7 +94,8 @@ public class CanonBall : MonoBehaviour
             PhotonNetwork.Instantiate("Destruction_1", transform.position, transform.rotation, 0, null);
             canonHitSound.Play();
 
-            PhotonNetwork.Destroy(collision.transform.gameObject);
+            PhotonNetwork.Destroy(collision.gameObject);
+
             if (pw.IsMine)
             {
                 PhotonNetwork.Destroy(gameObject);

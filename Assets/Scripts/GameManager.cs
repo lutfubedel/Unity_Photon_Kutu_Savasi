@@ -162,14 +162,14 @@ public class GameManager : MonoBehaviour
 
     public void MainMenu()
     {
+        PhotonNetwork.LeaveRoom();
         GameObject.FindWithTag("ServerManager").GetComponent<ServerManager>().isButton = true;
-        print(GameObject.FindWithTag("ServerManager").GetComponent<ServerManager>().isButton);
         PhotonNetwork.LoadLevel(0);
     }
 
     public void ExitButton()
     {
-        print(GameObject.FindWithTag("ServerManager").GetComponent<ServerManager>().isButton);
+        PhotonNetwork.LeaveRoom();
         PhotonNetwork.LoadLevel(0);
     }
 
